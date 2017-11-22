@@ -32,13 +32,18 @@ class Robot
             if x.class == Fixnum && y.class == Fixnum && f.class == String &&
               ["NORTH", "SOUTH", "EAST", "WEST"].include?(f)
               @robot = Robot.new(x,y,f)
-              result = "robot on the table!"
+              if @robot.is_fall?
+                @robot = nil
+                result = "Out of table! Pleas try again."
+              else
+                result = "Robot on the table!"
+              end
             end
           end
         else
           case input
           when "REPORT"
-            print @robot.report
+            result = @robot.nil? ? "Robot not found!" : @robot.report
           when "LEFT","RIGHT"
             print input
           when "MOVE"
