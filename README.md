@@ -8,7 +8,7 @@
 
 * The robot is free to roam around the surface of the table, but must be prevented from falling to destruction. Any movement that would result in the robot falling from the table must be prevented, however further valid movement commands must still be allowed.
 
-Create an application that can read in commands of the following form:\
+Create an application that can read in commands of the following form:
 ```
 PLACE X,Y,F
 MOVE
