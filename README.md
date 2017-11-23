@@ -77,7 +77,7 @@ Expected output:
 
     0,0,WEST
 
-#### Example c
+#### Example c
 
     PLACE 1,2,EAST
     MOVE
