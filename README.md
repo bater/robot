@@ -1,5 +1,19 @@
 # Toy Robot Simulator
 
+## Guide Line
+
+### Run application
+
+```bash
+git clone https://github.com/bater/robot.git
+cd robot
+ruby main.rb
+```
+
+### Run test
+
+Inside the folder path and run `rspec`
+
 ## Description
 
 * The application is a simulation of a toy robot moving on a square tabletop, of dimensions 5 units x 5 units.
