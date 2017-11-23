@@ -9,7 +9,7 @@ class Robot
   end
 
   def report
-    print "#{@X},#{@Y},#{@F}"
+    "#{@X},#{@Y},#{@F}"
   end
 
   def turn side
@@ -24,13 +24,13 @@ class Robot
     temp = [@X, @Y]
     case @F
     when "NORTH"
-      @X += 1
-    when "SOUTH"
-      @X -= 1
-    when "EAST"
-      @Y -= 1
-    when "WEST"
       @Y += 1
+    when "SOUTH"
+      @Y -= 1
+    when "EAST"
+      @X += 1
+    when "WEST"
+      @X -= 1
     end
     if is_fall?
       @X, @Y = temp

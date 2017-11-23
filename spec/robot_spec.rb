@@ -16,15 +16,15 @@ RSpec.describe Robot do
   end
 
   it "#report" do
-    expect { robot.report }.to output('1,1,WEST').to_stdout
+    expect( robot.report ).to eq('1,1,WEST')
   end
 
   it "#turn right and left" do
     robot.turn "RIGHT"
-    expect { robot.report }.to output('1,1,NORTH').to_stdout
+    expect(robot.report).to eq('1,1,NORTH')
     robot.turn "LEFT"
     robot.turn "LEFT"
-    expect { robot.report }.to output('1,1,SOUTH').to_stdout
+    expect(robot.report).to eq('1,1,SOUTH')
   end
 
   it "#is_fall?" do
@@ -33,10 +33,30 @@ RSpec.describe Robot do
 
   context "#move" do
     it "vaild move" do
-      expect { robot.move }.to output('1,2,WEST').to_stdout
+      expect(robot.move).to eq('0,1,WEST')
     end
     it "invaild move" do
-      expect( Robot.new(4,4,"WEST").move ).to eq "Out of table! Pleas try again."
+      expect( Robot.new(4,4,"EAST").move ).to eq "Out of table! Pleas try again."
+    end
+  end
+
+  context "Pass Example" do
+    it "example a" do
+      robot = Robot.new(0,0,"NORTH")
+      expect(robot.move ).to eq('0,1,NORTH')
+    end
+    it "example b" do
+      robot = Robot.new(0,0,"NORTH")
+      robot.turn "LEFT"
+      expect(robot.report ).to eq('0,0,WEST')
+    end
+    it "example c" do
+      robot = Robot.new(1,2,"EAST")
+      robot.move
+      robot.move
+      robot.turn "LEFT"
+      robot.move
+      expect(robot.report ).to eq('3,3,NORTH')
     end
   end
 end
