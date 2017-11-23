@@ -68,7 +68,7 @@ class Robot
         print "#{result}\n-------------------------\n"
         input = init
       end
-      print "GoodBye!"
+      print "GoodBye!\n"
     end
 
     def help_text
