@@ -30,4 +30,13 @@ RSpec.describe Robot do
   it "#is_fall?" do
     expect(robot.is_fall?).to eq(false)
   end
+
+  context "#move" do
+    it "vaild move" do
+      expect { robot.move }.to output('1,2,WEST').to_stdout
+    end
+    it "invaild move" do
+      expect( Robot.new(4,4,"WEST").move ).to eq "Out of table! Pleas try again."
+    end
+  end
 end

@@ -20,6 +20,26 @@ class Robot
     @X < 0 || @X > 4 || @Y < 0 || @Y > 4
   end
 
+  def move
+    temp = [@X, @Y]
+    case @F
+    when "NORTH"
+      @X += 1
+    when "SOUTH"
+      @X -= 1
+    when "EAST"
+      @Y -= 1
+    when "WEST"
+      @Y += 1
+    end
+    if is_fall?
+      @X, @Y = temp
+      "Out of table! Pleas try again."
+    else
+      report
+    end
+  end
+
   class << self
     def init
       print "Tips: q for quit, h for help.\n"
@@ -56,7 +76,7 @@ class Robot
           when "LEFT","RIGHT"
             result = @robot.nil? ? "Robot not found!" : @robot.turn(input)
           when "MOVE"
-            print "move!"
+            result = @robot.nil? ? "Robot not found!" : @robot.move
           when ""
             print "Q for quit."
           when "H","HELP"
