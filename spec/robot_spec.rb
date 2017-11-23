@@ -3,6 +3,7 @@ require_relative '../robot.rb'
 
 RSpec.describe Robot do
   let(:robot) {Robot.new(1,1,"WEST")}
+
   it "vaild initialize" do
     expect { robot }.not_to raise_error
   end

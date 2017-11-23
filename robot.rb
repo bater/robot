@@ -53,7 +53,7 @@ class Robot
         result = ""
         if input.start_with?("PLACE")
           xyf = input.split(" ")[1]&.split(",")
-          result = "wrong axis format, should be integer,integer,string (NORTH, SOUTH, EAST or WEST)"
+          result = "Wrong axis format, should be integer,integer,string (NORTH, SOUTH, EAST or WEST)"
           if xyf&.size == 3
             x = xyf[0].to_i
             y = xyf[1].to_i
@@ -69,20 +69,19 @@ class Robot
               end
             end
           end
+
         else
           case input
           when "REPORT"
-            result = @robot.nil? ? "Robot not found!" : @robot.report
+            result = @robot.report
           when "LEFT","RIGHT"
-            result = @robot.nil? ? "Robot not found!" : @robot.turn(input)
+            result = @robot.turn input
           when "MOVE"
-            result = @robot.nil? ? "Robot not found!" : @robot.move
-          when ""
-            print "Q for quit."
+            result = @robot.move
           when "H","HELP"
             help_text
           else
-            print  "Command not found, see help if you need help."
+            result = "Command not found, see help if you need help."
           end
         end
         print "#{result}\n-------------------------\n"
