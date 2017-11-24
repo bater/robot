@@ -1,5 +1,4 @@
 require 'spec_helper'
-require_relative '../robot.rb'
 
 RSpec.describe Robot do
   let(:robot) {Robot.new(1,1,"WEST")}
@@ -14,6 +13,13 @@ RSpec.describe Robot do
     it "wrong input argumen" do
       expect { Robot.new(0,0,"Wrong") }.to raise_error("Wrong input argumen")
     end
+  end
+
+  it "discard all commands in the sequence until a valid PLACE" do
+    expect(nil.move).to eq('Robot not found!')
+    expect(nil.turn("LEFT")).to eq('Robot not found!')
+    expect(nil.turn("RIGHT")).to eq('Robot not found!')
+    expect(nil.report).to eq('Robot not found!')
   end
 
   it "#report" do

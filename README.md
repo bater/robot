@@ -8,7 +8,7 @@ cd robot
 ruby main.rb
 ```
 
-I add one more method called `MAP`, and you can call that inside the application to see where is the robot.
+I add one more command called `MAP`, and you can call this inside the application to see where is the robot.
 
 ### Run test
 
