@@ -2,6 +2,11 @@ class Robot
   TURN_RIGHT = {NORTH: "EAST", SOUTH: "WEST", EAST: "SOUTH", WEST: "NORTH"}
   TURN_LEFT = {NORTH: "WEST", SOUTH: "EAST", EAST: "NORTH", WEST: "SOUTH"}
   ROBOT_FLAG = {NORTH: "^", SOUTH: "v", EAST: ">", WEST: "<"}
+  HELP = "PLACE X,Y,F : put the toy robot on the table in position X,Y and facing NORTH, SOUTH, EAST or WEST.\n" +
+  "MOVE : move the toy robot one unit forward in the direction it is currently facing.\n" +
+  "LEFT & RIGHT: rotate the robot 90 degrees in the specified direction without changing the position of the robot.\n" +
+  "REPORT : announce the X,Y and F of the robot. This can be in any form, but standard output is sufficient.\n" +
+  "MAP : display location of the robot."
 
   def initialize(x,y,f)
     raise ArgumentError.new("Out of table") if x < 0 || x > 4 || y < 0 || y > 4
@@ -52,7 +57,7 @@ class Robot
       map_string += @Y + i == 4 ? column : "---|---|---|---|---"
       map_string += i < 4 ? "\n" : " E"
     end
-    print map_string
+    map_string
   end
 
   class << self
@@ -65,54 +70,44 @@ class Robot
       print "welcome to ToyRobot!\n"
       input = init
       while input != "Q"  do
-        result = ""
-        if input.start_with?("PLACE")
-          xyf = input.split(" ")[1]&.split(",")
-          result = "Wrong axis format, should be integer,integer,string (NORTH, SOUTH, EAST or WEST)"
-          if xyf&.size == 3
-            x = xyf[0].to_i
-            y = xyf[1].to_i
-            f = xyf[2]
-            if x.class == Fixnum && y.class == Fixnum && f.class == String &&
-              ["NORTH", "SOUTH", "EAST", "WEST"].include?(f)
-              @robot = Robot.new(x,y,f)
-              if @robot.is_fall?
-                @robot = nil
-                result = "Out of table! Pleas try again."
-              else
-                result = "Robot on the table!"
-              end
-            end
-          end
-
-        else
-          case input
-          when "REPORT"
-            result = @robot.report
-          when "LEFT","RIGHT"
-            result = @robot.turn input
-          when "MOVE"
-            result = @robot.move
-          when "H","HELP"
-            help_text
-          when "MAP"
-            result = @robot.map
-          else
-            result = "Command not found, see help if you need help."
-          end
-        end
-        print "#{result}\n-------------------------\n"
+        print "#{commands(input)}\n" +
+        "------------------------\n"
         input = init
       end
       print "GoodBye!\n"
     end
 
-    def help_text
-      print "PLACE X,Y,F : put the toy robot on the table in position X,Y and facing NORTH, SOUTH, EAST or WEST.\n" +
-       "MOVE : move the toy robot one unit forward in the direction it is currently facing.\n" +
-       "LEFT & RIGHT: rotate the robot 90 degrees in the specified direction without changing the position of the robot.\n" +
-       "REPORT : announce the X,Y and F of the robot. This can be in any form, but standard output is sufficient.\n" +
-       "MAP : display location of the robot."
+    def commands input
+      if input.start_with?("PLACE")
+        xyf = input.split(" ")[1]&.split(",")
+        result = "Wrong axis format, should be integer,integer,string (NORTH, SOUTH, EAST or WEST)"
+        if xyf&.size == 3
+          x = xyf[0].to_i
+          y = xyf[1].to_i
+          f = xyf[2]
+          if x.class == Fixnum && y.class == Fixnum && ["NORTH", "SOUTH", "EAST", "WEST"].include?(f)
+            @robot = Robot.new(x,y,f) rescue nil
+            result = @robot ? "Robot on the table!" : "Out of table! Pleas try again."
+          end
+        end
+        result
+      else
+        case input
+        when "REPORT"
+          @robot.report
+        when "LEFT","RIGHT"
+          @robot.turn input
+        when "MOVE"
+          @robot.move
+        when "H","HELP"
+          HELP
+        when "MAP"
+          @robot.map
+        else
+          "Command not found, see help if you need help."
+        end
+      end
     end
+
   end
 end
