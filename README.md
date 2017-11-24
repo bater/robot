@@ -1,7 +1,5 @@
 # Toy Robot Simulator
 
-## Guide Line
-
 ### Run application
 
 ```bash
@@ -9,6 +7,8 @@ git clone https://github.com/bater/robot.git
 cd robot
 ruby main.rb
 ```
+
+I add one more method called `MAP`, and you can call that inside the application to see where is the robot.
 
 ### Run test
 

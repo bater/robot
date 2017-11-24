@@ -1,6 +1,7 @@
 class Robot
   TURN_RIGHT = {NORTH: "EAST", SOUTH: "WEST", EAST: "SOUTH", WEST: "NORTH"}
   TURN_LEFT = {NORTH: "WEST", SOUTH: "EAST", EAST: "NORTH", WEST: "SOUTH"}
+  ROBOT_FLAG = {NORTH: "^", SOUTH: "v", EAST: ">", WEST: "<"}
 
   def initialize(x,y,f)
     raise ArgumentError.new("Out of table") if x < 0 || x > 4 || y < 0 || y > 4
@@ -38,6 +39,20 @@ class Robot
     else
       report
     end
+  end
+
+  def map
+    column = ""
+    5.times do |i|
+      column += @X == i ? "-#{ROBOT_FLAG[@F.to_sym]}-" : "---"
+      column += "|" if i < 4
+    end
+    map_string = "N\n"
+    5.times do |i|
+      map_string += @Y + i == 4 ? column : "---|---|---|---|---"
+      map_string += i < 4 ? "\n" : " E"
+    end
+    print map_string
   end
 
   class << self
@@ -80,6 +95,8 @@ class Robot
             result = @robot.move
           when "H","HELP"
             help_text
+          when "MAP"
+            result = @robot.map
           else
             result = "Command not found, see help if you need help."
           end
@@ -94,7 +111,8 @@ class Robot
       print "PLACE X,Y,F : put the toy robot on the table in position X,Y and facing NORTH, SOUTH, EAST or WEST.\n" +
        "MOVE : move the toy robot one unit forward in the direction it is currently facing.\n" +
        "LEFT & RIGHT: rotate the robot 90 degrees in the specified direction without changing the position of the robot.\n" +
-       "REPORT : announce the X,Y and F of the robot. This can be in any form, but standard output is sufficient."
+       "REPORT : announce the X,Y and F of the robot. This can be in any form, but standard output is sufficient.\n" +
+       "MAP : display location of the robot."
     end
   end
 end

@@ -4,4 +4,5 @@ class NilClass
   end
   alias :report :turn
   alias :move :turn
+  alias :map :turn
 end
