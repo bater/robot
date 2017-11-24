@@ -15,11 +15,12 @@ class Robot
   end
 
   def report
-    "#{@X},#{@Y},#{@F}"
+    map + "#{@X},#{@Y},#{@F}"
   end
 
   def turn side
     @F = side == "RIGHT" ? TURN_RIGHT[@F.to_sym] : TURN_LEFT[@F.to_sym]
+    report
   end
 
   def is_fall?
@@ -55,7 +56,7 @@ class Robot
     map_string = "N\n"
     5.times do |i|
       map_string += @Y + i == 4 ? column : "---|---|---|---|---"
-      map_string += i < 4 ? "\n" : " E"
+      map_string += i < 4 ? "\n" : " E\n"
     end
     map_string
   end
@@ -87,7 +88,7 @@ class Robot
           f = xyf[2]
           if x.class == Fixnum && y.class == Fixnum && ["NORTH", "SOUTH", "EAST", "WEST"].include?(f)
             @robot = Robot.new(x,y,f) rescue nil
-            result = @robot ? "Robot on the table!" : "Out of table! Pleas try again."
+            result = @robot ? "#{@robot.map}Robot on the table!" : "Out of table! Pleas try again."
           end
         end
         result
