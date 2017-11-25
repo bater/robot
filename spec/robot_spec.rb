@@ -47,6 +47,10 @@ RSpec.describe Robot do
     end
   end
 
+  it ".input_from_file" do
+    expect(Robot.input_from_file(File.read("files/demo.txt").split("\n"))).to include "> place 0,0,east\nN\n---|---|---|---|---\n---|---|---|---|---\n"
+  end
+
   context "Pass Example" do
     it "example a" do
       robot = Robot.new(0,0,"NORTH")
