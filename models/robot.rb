@@ -6,7 +6,8 @@ class Robot
   "MOVE : move the toy robot one unit forward in the direction it is currently facing.\n" +
   "LEFT & RIGHT: rotate the robot 90 degrees in the specified direction without changing the position of the robot.\n" +
   "REPORT : announce the X,Y and F of the robot. This can be in any form, but standard output is sufficient.\n" +
-  "MAP : display location of the robot."
+  "MAP : display location of the robot.\n" +
+  "READ : Input from file, plase put file inside files folder. Try `read demo.txt`"
 
   def initialize(x,y,f)
     raise ArgumentError.new("Out of table") if x < 0 || x > 4 || y < 0 || y > 4
@@ -92,6 +93,16 @@ class Robot
           end
         end
         result
+      elsif input.start_with?("READ")
+        file_path = input.split(" ")[1]
+        result = "File not found, plase put file inside files folder. Try `read demo.txt`"
+        if file_path
+          file_path = "files/#{file_path}"
+          if File.exists?(file_path)
+            result = input_from_file File.read(file_path).split("\n")
+          end
+        end
+        result
       else
         case input
         when "REPORT"
@@ -108,6 +119,15 @@ class Robot
           "Command not found, see help if you need help."
         end
       end
+    end
+
+    def input_from_file inputs
+      result = ""
+      inputs.each do |input|
+        result += "> #{input}\n"
+        result += "#{commands(input.upcase)}\n"
+      end
+      result
     end
 
   end
