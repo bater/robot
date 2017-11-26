@@ -1,7 +1,10 @@
 class Robot
+  TABLE_SIZE = 5
+  MAX_INDEX = TABLE_SIZE - 1
   TURN_RIGHT = {NORTH: "EAST", SOUTH: "WEST", EAST: "SOUTH", WEST: "NORTH"}
   TURN_LEFT = {NORTH: "WEST", SOUTH: "EAST", EAST: "NORTH", WEST: "SOUTH"}
-  ROBOT_FLAG = {NORTH: "^", SOUTH: "v", EAST: ">", WEST: "<"}
+  ROBOT_FLAG = {NORTH: " ^ ", SOUTH: " v ", EAST: " > ", WEST: " < "}
+  MOVE = {NORTH: "@Y += 1", SOUTH: "@Y -= 1", EAST: "@X += 1", WEST: "@X -= 1"}
   HELP = "PLACE X,Y,F : put the toy robot on the table in position X,Y and facing NORTH, SOUTH, EAST or WEST.\n" +
   "MOVE : move the toy robot one unit forward in the direction it is currently facing.\n" +
   "LEFT & RIGHT: rotate the robot 90 degrees in the specified direction without changing the position of the robot.\n" +
@@ -10,13 +13,13 @@ class Robot
   "READ : Input from file, plase put file inside files folder. Try `read demo.txt`"
 
   def initialize(x,y,f)
-    raise ArgumentError.new("Out of table") if x < 0 || x > 4 || y < 0 || y > 4
+    raise ArgumentError.new("Out of table") if x < 0 || x > MAX_INDEX || y < 0 || y > MAX_INDEX
     raise ArgumentError.new("Wrong input argumen") unless ["NORTH", "SOUTH", "EAST", "WEST"].include?(f)
     @X, @Y, @F = x,y,f
   end
 
   def report
-    map + "#{@X},#{@Y},#{@F}"
+    "#{map}#{@X},#{@Y},#{@F}"
   end
 
   def turn side
@@ -25,21 +28,12 @@ class Robot
   end
 
   def is_fall?
-    @X < 0 || @X > 4 || @Y < 0 || @Y > 4
+    @X < 0 || @X > MAX_INDEX || @Y < 0 || @Y > MAX_INDEX
   end
 
   def move
     temp = [@X, @Y]
-    case @F
-    when "NORTH"
-      @Y += 1
-    when "SOUTH"
-      @Y -= 1
-    when "EAST"
-      @X += 1
-    when "WEST"
-      @X -= 1
-    end
+    eval MOVE[@F.to_sym]
     if is_fall?
       @X, @Y = temp
       "Out of table! Pleas try again."
@@ -49,15 +43,15 @@ class Robot
   end
 
   def map
-    column = ""
-    5.times do |i|
-      column += @X == i ? "-#{ROBOT_FLAG[@F.to_sym]}-" : "---"
-      column += "|" if i < 4
+    columns = ""
+    TABLE_SIZE.times do |column|
+      columns += @X == column ? ROBOT_FLAG[@F.to_sym] : "---"
+      columns += "|" if column < MAX_INDEX
     end
     map_string = "N\n"
-    5.times do |i|
-      map_string += @Y + i == 4 ? column : "---|---|---|---|---"
-      map_string += i < 4 ? "\n" : " E\n"
+    TABLE_SIZE.times do |row|
+      map_string += @Y + row == MAX_INDEX ? columns : "---|---|---|---|---"
+      map_string += row < MAX_INDEX ? "\n" : " E\n"
     end
     map_string
   end
@@ -69,7 +63,7 @@ class Robot
     end
 
     def start
-      print "welcome to ToyRobot!\n"
+      print "Welcome to ToyRobot!\n"
       input = init
       while input != "Q"  do
         print "#{commands(input)}\n" +
@@ -80,9 +74,10 @@ class Robot
     end
 
     def commands input
-      if input.start_with?("PLACE")
+      case input
+      when /PLACE/
         xyf = input.split(" ")[1]&.split(",")
-        result = "Wrong axis format, should be integer,integer,string (NORTH, SOUTH, EAST or WEST)"
+        result = "Wrong axis format, should be `place integer,integer,string` (NORTH, SOUTH, EAST or WEST)."
         if xyf&.size == 3
           x = xyf[0].to_i
           y = xyf[1].to_i
@@ -93,40 +88,25 @@ class Robot
           end
         end
         result
-      elsif input.start_with?("READ")
+      when /READ/
         file_path = input.split(" ")[1]
-        result = "File not found, plase put file inside files folder. Try `read demo.txt`"
-        if file_path
-          file_path = "files/#{file_path}"
-          if File.exists?(file_path)
-            result = input_from_file File.read(file_path).split("\n")
-          end
-        end
-        result
+        file_path && File.exists?("files/#{file_path}") ?
+          input_from_file(File.read("files/#{file_path}").split("\n")) :
+          "File not found, plase put file inside files folder. Try `read demo.txt`"
+      when "REPORT", "MOVE", "MAP"
+        @robot.send input.downcase
+      when "LEFT", "RIGHT"
+        @robot.turn input
+      when "H", "HELP"
+        HELP
       else
-        case input
-        when "REPORT"
-          @robot.report
-        when "LEFT","RIGHT"
-          @robot.turn input
-        when "MOVE"
-          @robot.move
-        when "H","HELP"
-          HELP
-        when "MAP"
-          @robot.map
-        else
-          "Command not found, see help if you need help."
-        end
+        "Command not found, see help if you need help."
       end
     end
 
     def input_from_file inputs
       result = ""
-      inputs.each do |input|
-        result += "> #{input}\n"
-        result += "#{commands(input.upcase)}\n"
-      end
+      inputs.each {|input| result += "> #{input}\n#{commands(input.upcase)}\n" }
       result
     end
 
